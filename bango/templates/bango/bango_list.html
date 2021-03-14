@@ -1,19 +1,28 @@
-<!DOCTYPE html>
-<html>
+{% extends 'bango/base.html' %}
+{% block header %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
+{% endblock %}
+{% block title %}
+    背番号リスト
+{% endblock %}
 
-<head>
-    <meta charset="utf-8" />
-    <title>背番号リスト</title>
-</head>
-
-<body>
-    <table border="1">
+{% block content %}
+	<form action="" method="get">
+        コード:<input name="cquery" value="{{ request.GET.cquery }}" type="text">
+        背番号:<input name="sequery" value="{{ request.GET.sequery }}" type="text">
+        仕入先コード:<input name="scquery" value="{{ request.GET.scquery }}" type="text">
+        仕入先名:<input name="snquery" value="{{ request.GET.snquery }}" type="text">
+        <button type="submit">検索する</button>
+    </form>
+    <table class="table-light table-striped" border="1">
+	    <thead>
         <tr>
             <th>コード</th>
             <th>背番号</th>
             <th>仕入先コード</th>
             <th>仕入先名</th>
         </tr>
+	    </thead>
         {% for bango in bango_list %}
         <tr>
             <td>{{ bango.hcode }}</td>
@@ -23,6 +32,4 @@
         </tr>
         {% endfor %}
     </table>
-</body>
-
-</html>
+{% endblock %}
