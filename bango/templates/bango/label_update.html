@@ -1,0 +1,17 @@
+{% extends 'bango/base.html' %}
+{% block header %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
+{% endblock %}
+{% block title %}
+    ラベル作成リスト
+{% endblock %}
+ 
+{% block content %}
+    <h1>ラベル枚数編集</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="保存">
+    </form>
+{% endblock %}
+

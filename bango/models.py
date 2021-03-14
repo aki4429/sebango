@@ -15,3 +15,10 @@ class Bango(models.Model):
 
     def __str__(self):
         return self.se
+
+class Label(models.Model):
+    sebango = models.ForeignKey(Bango, on_delete=models.CASCADE)
+    qty = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.sebango

@@ -1,0 +1,38 @@
+{% extends 'bango/base.html' %}
+{% block header %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
+{% endblock %}
+{% block title %}
+    ラベル作成リスト
+{% endblock %}
+
+{% block content %}
+<a class="btn btn-default" href="{% url 'label_delete_all'  %}">クリア</a>
+<a class="btn btn-default" href="{% url 'make_label'  %}">ラベル発行</a>
+    <table class="table-light table-striped" border="1">
+	    <thead>
+        <tr>
+            <th>コード</th>
+            <th>背番号</th>
+            <th>仕入先コード</th>
+            <th>仕入先名</th>
+            <th>ラベル枚数</th>
+            <th>編集</th>
+        </tr>
+	    </thead>
+        {% for label in label_list %}
+        <tr>
+            <td>{{ label.sebango.hcode }}</td>
+            <td>{{ label.sebango.se }}</td>
+            <td>{{ label.sebango.shiire.scode }}</td>
+            <td>{{ label.sebango.shiire.sname }}</td>
+            <td>{{ label.qty }}</td>
+            <td>
+	    <a href="{% url 'label_edit' pk=label.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+	    <td>
+        </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
