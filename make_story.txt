@@ -1,0 +1,35 @@
+mkdir sebango
+cd sebango
+
+python3 -m venv vvenv
+source vvenv/bin/activate
+
+python -m pip install --upgrade pip
+
+requirements.txt
+------------------
+Django~=2.2.4
+
+pip install -r requirements.txt
+
+django-admin startproject mysite .
+
+sebango/settings.py
+----------------------
+TIME_ZONE = 'Asia/Tokyo'
+LANGUAGE_CODE = 'ja'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'sebango.sqlite3'),
+    }
+}
+
+python manage.py migrate
+
+cut -d, -f4-5 sebango.csv | sort | uniq >shiire.csv
+
+
