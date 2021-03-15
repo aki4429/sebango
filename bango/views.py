@@ -76,7 +76,7 @@ class LabelUpdate(LoginRequiredMixin, UpdateView):
 # データのダウンロード
 def make_label(request):
     # レスポンスの設定
-    response = HttpResponse(content_type='text/csv')
+    response = HttpResponse(content_type='text/csv; charset=CP932')
     filename = 'labels.csv'  # ダウンロードするcsvファイル名
     response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
     writer = csv.writer(response)
