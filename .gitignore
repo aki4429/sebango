@@ -2,6 +2,6 @@
 *~
 /.vscode
 __pycache__
-vvenv
-sebango.sqlite
+*venv
+sebango.sqlite3
 /static

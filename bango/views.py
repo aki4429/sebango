@@ -7,7 +7,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 import csv
 from django.http import HttpResponse
+from .forms import UploadFileForm
+import os
 
+UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/files/'
  
 class BangoList(LoginRequiredMixin, ListView):
     template_name='bango/bango_list.html'
@@ -86,3 +89,36 @@ def make_label(request):
         for i in range(int(data.qty)):
             writer.writerow([data.sebango.hcode, data.sebango.se, '*'+data.sebango.se+'*', data.sebango.shiire.scode, data.sebango.shiire.sname])
     return response
+
+@login_required
+def upload(request):
+    if request.method == 'POST':
+        # POST
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            # file is saved. by binary
+            f = request.FILES['file']
+            path = os.path.join(UPLOAD_DIR, f.name)
+            with open(path, 'wb') as destination:
+                for chunk in f.chunks():
+                    destination.write(chunk)
+
+            # open csv
+            with open(path, 'r', encoding='CP932') as destination:
+                # read csv
+                reader = csv.reader(destination)
+                # bulk insert 
+                bango_list = []
+                for row in reader:
+                    l = Bango(hcode = row[0], se = row[1], 
+                            shiire=Shiire.objects.filter(scode__iexact=row[2])[0])
+                    bango_list.append(l)
+
+                Bango.objects.bulk_create(bango_list)
+                os.remove(path)
+
+            return redirect('bango_list')
+    else:
+        # GET
+        form = UploadFileForm()
+        return render(request, 'bango/upload.html', {'form':form})

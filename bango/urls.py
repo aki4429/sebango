@@ -7,4 +7,5 @@ urlpatterns = [
     path('label_delete_all/', views.label_delete_all, name='label_delete_all'),
     path('<int:pk>/update/', views.LabelUpdate.as_view(), name='label_edit'),
     path('make_label/', views.make_label, name='make_label'),
+    path('upload/', views.upload, name='upload'),
 ]

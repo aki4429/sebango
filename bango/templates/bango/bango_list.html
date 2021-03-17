@@ -16,6 +16,7 @@ function allcheck( tf ) {
 }
  </script>
    <a class="btn btn-default" href="{% url 'label_delete_all'  %}">ラベル作成クリア</a>
+   <a class="btn btn-default" href="{% url 'upload'  %}">データアップロード</a>
 
 	<form action="" method="get">
         コード:<input name="cquery" value="{{ request.GET.cquery }}" type="text">
