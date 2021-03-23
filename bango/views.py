@@ -5,10 +5,10 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
-import csv
 from django.http import HttpResponse
 from .forms import UploadFileForm
-import os
+import os, io, csv
+from .next_se import set_next_se
 
 UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/files/'
  
@@ -45,7 +45,7 @@ class BangoList(LoginRequiredMixin, ListView):
                 Q(hcode__icontains=cq_word), 
                 Q(se__icontains=seq_word), 
                 Q(shiire__scode__icontains=scq_word), 
-                Q(shiire__sname__icontains=snq_word)) 
+                Q(shiire__sname__icontains=snq_word)).order_by('se') 
         else:
             #object_list = Bango.objects.all()
             bango_list = ''
@@ -107,9 +107,16 @@ def upload(request):
             with open(path, 'r', encoding='CP932') as destination:
                 # read csv
                 reader = csv.reader(destination)
+                #listを取得
+                upload_list =[]
+                for row in reader:
+                    upload_list.append(row)
+
+                list_with_se = set_next_se(upload_list, Bango)
+
                 # bulk insert 
                 bango_list = []
-                for row in reader:
+                for row in list_with_se:
                     l = Bango(hcode = row[0], se = row[1], 
                             shiire=Shiire.objects.filter(scode__iexact=row[2])[0])
                     bango_list.append(l)
@@ -122,3 +129,23 @@ def upload(request):
         # GET
         form = UploadFileForm()
         return render(request, 'bango/upload.html', {'form':form})
+
+#背番号リストをダウンロード
+@login_required
+def down_sebango(request):
+    response = HttpResponse(content_type='text/csv; charset=Shift-JIS')
+    response['Content-Disposition'] = 'attachment; filename="sebango_list.csv"'
+    bangos = Bango.objects.order_by('se')
+    data = []
+    for bango in bangos:
+        data.append([bango.hcode, bango.se, bango.shiire.scode, bango.shiire.sname])
+
+    sio = io.StringIO()
+    writer = csv.writer(sio)
+    writer.writerows(data)
+    response.write(sio.getvalue().encode('cp932'))
+
+    return response
+
+
+

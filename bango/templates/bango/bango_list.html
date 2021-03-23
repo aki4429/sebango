@@ -15,8 +15,9 @@ function allcheck( tf ) {
    }
 }
  </script>
+   <a  href="{% url 'down_se'  %}">背番号リストダウンロード</a>
    <a class="btn btn-default" href="{% url 'label_delete_all'  %}">ラベル作成クリア</a>
-   <a class="btn btn-default" href="{% url 'upload'  %}">データアップロード</a>
+   <a class="btn btn-default" href="{% url 'upload'  %}">背番号一括登録</a>
 
 	<form action="" method="get">
         コード:<input name="cquery" value="{{ request.GET.cquery }}" type="text">

@@ -8,4 +8,5 @@ urlpatterns = [
     path('<int:pk>/update/', views.LabelUpdate.as_view(), name='label_edit'),
     path('make_label/', views.make_label, name='make_label'),
     path('upload/', views.upload, name='upload'),
+    path('down_se/', views.down_sebango, name='down_se'),
 ]
