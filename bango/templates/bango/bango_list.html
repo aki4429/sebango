@@ -34,6 +34,9 @@ function allcheck( tf ) {
             <th>背番号</th>
             <th>仕入先コード</th>
             <th>仕入先名</th>
+            <th>編集</th>
+            <th>コピー</th>
+            <th>削除</th>
             <th>ラベル作成
 <input type="button" value="全部ON！" onclick="allcheck(true);">
    <input type="button" value="全部OFF！" onclick="allcheck(false);">
@@ -46,6 +49,15 @@ function allcheck( tf ) {
             <td>{{ bango.se }}</td>
             <td>{{ bango.shiire.scode }}</td>
             <td>{{ bango.shiire.sname }}</td>
+	    <td>
+		    <a href="{% url 'bango_update' pk=bango.pk %}"> 編集 </a>
+	    </td>
+	    <td>
+		    <a href="{% url 'bango_copy' pk=bango.pk %}"> コピー </a>
+	    </td>
+	    <td>
+		    <a href="{% url 'bango_delete' pk=bango.pk %}"> 削除 </a>
+	    </td>
 	    <td>
 		<input type="checkbox" name="label" value="{{ bango.pk }}">
         </td>

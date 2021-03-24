@@ -1,6 +1,15 @@
 #upload list = [規格, 仕入先コード] を受けて、
 #そのコード分類の次の背番号を返す。
 
+#その分類の最後の背番号の次を返す
+def se_last(sebango, Bango):
+    moji = sebango.split('-')[0]
+    bunruis = Bango.objects.filter(se__contains=moji).order_by('se')
+    suji = bunruis.last().se.split('-')[1]
+    next_suji = str(int(suji) + 1).zfill(4)
+    next_sebango = moji + "-" + next_suji
+    return next_sebango
+
 #次の背番号を作成 
 def se_next(sebango):
     moji = sebango.split('-')[0]

@@ -1,14 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Bango, Shiire, Label
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.http import HttpResponse
-from .forms import UploadFileForm
+from .forms import UploadFileForm, BangoForm
 import os, io, csv
-from .next_se import set_next_se
+from .next_se import set_next_se, se_last
 
 UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/files/'
  
@@ -147,5 +147,40 @@ def down_sebango(request):
 
     return response
 
+class BangoDetail(LoginRequiredMixin, DetailView):
+    model = Bango
+
+class BangoUpdate(LoginRequiredMixin, UpdateView):
+    template_name = 'bango/bango_update_form.html'
+    model = Bango
+    form_class = BangoForm
+ 
+    def get_success_url(self):
+        return reverse('bango_detail', kwargs={'pk': self.object.pk})
+
+class BangoCopy(LoginRequiredMixin, UpdateView):
+    template_name = 'bango/bango_copy.html'
+    model = Bango
+    form_class = BangoForm
+
+    def get_success_url(self):
+        return reverse('bango_detail', kwargs={'pk': self.object.pk})
+
+    #ここでコピーするためにget_objectをオーバーライドします。
+    def get_object(self, queryset=None):
+        #self.request.GETは使えないので、self.kwargsを使うところがミソ
+        bango = Bango.objects.get(pk=self.kwargs.get('pk'))
+        #プライマリーキーを最新に。これがしたいためのオーバーライド
+        bango.pk = Bango.objects.last().pk + 1
+        #背番号をその分類の最後の次の背番号に変更
+        bango.se = se_last(bango.se, Bango)
+        return bango
+
+class BangoDelete(LoginRequiredMixin, DeleteView):
+    template_name = 'bango/bango_delete.html'
+    model = Bango
+
+    def get_success_url(self):
+        return reverse('bango_list')
 
 

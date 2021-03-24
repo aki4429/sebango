@@ -1,0 +1,21 @@
+{% extends 'bango/base.html' %}
+{% block header %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
+{% endblock %}
+{% block title %}
+    背番号コピーから登録
+{% endblock %}
+
+{% block content %}
+    <h3>背番号コピーから登録画面</h3>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <table>
+            {{ form.as_table }}
+        </table>
+        <button type="submit">save</button>
+    </form>
+
+{% endblock %}

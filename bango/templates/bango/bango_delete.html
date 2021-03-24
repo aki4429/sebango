@@ -1,0 +1,17 @@
+{% extends 'bango/base.html' %}
+{% block header %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
+{% endblock %}
+{% block title %}
+    背番号削除確認
+{% endblock %}
+
+{% block content %}
+    <h3>背番号削除確認</h3>
+       <form method="POST" >
+        {% csrf_token %}
+        <p>{{ bango.hcode }}/{{ bango.se }}/{{ bango.shiire.scode }} /{{ bango.shiire.sname }}を削除しますか？</p>
+        <button type="submit" class="save btn btn-default">削除</button>
+    </form>
+
+{% endblock %}

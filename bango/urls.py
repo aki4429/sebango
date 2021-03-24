@@ -9,4 +9,8 @@ urlpatterns = [
     path('make_label/', views.make_label, name='make_label'),
     path('upload/', views.upload, name='upload'),
     path('down_se/', views.down_sebango, name='down_se'),
+    path('<int:pk>/detail/', views.BangoDetail.as_view(), name='bango_detail'),
+    path('<int:pk>/bango_update/', views.BangoUpdate.as_view(), name='bango_update'),
+    path('<int:pk>/bango_copy/', views.BangoCopy.as_view(), name='bango_copy'),
+    path('<int:pk>/bango_delete/', views.BangoDelete.as_view(), name='bango_delete'),
 ]
