@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from .forms import UploadFileForm, BangoForm
 import os, io, csv
 from .next_se import set_next_se, se_last
+from .make_space_one import s_one
 
 UPLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/files/'
  
@@ -87,7 +88,7 @@ def make_label(request):
     label_data = Label.objects.all()  # 対象ラベルデータを取得
     for data in label_data:
         for i in range(int(data.qty)):
-            writer.writerow([data.sebango.hcode, data.sebango.se, '*'+data.sebango.se+'*', data.sebango.shiire.scode, data.sebango.shiire.sname])
+            writer.writerow([s_one(data.sebango.hcode), data.sebango.se, '*'+data.sebango.se+'*', data.sebango.shiire.scode, data.sebango.shiire.sname])
     return response
 
 @login_required
