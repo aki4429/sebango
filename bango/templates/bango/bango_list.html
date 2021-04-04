@@ -20,26 +20,33 @@ function allcheck( tf ) {
    <a class="btn btn-default" href="{% url 'upload'  %}">背番号一括登録</a>
 
 	<form action="" method="get">
+	<p>
         コード:<input name="cquery" value="{{ request.GET.cquery }}" type="text">
         背番号:<input name="sequery" value="{{ request.GET.sequery }}" type="text">
-        仕入先コード:<input name="scquery" value="{{ request.GET.scquery }}" type="text">
+        仕入先CD:<input name="scquery" value="{{ request.GET.scquery }}" type="text">
         仕入先名:<input name="snquery" value="{{ request.GET.snquery }}" type="text">
+	</p><p>
+        規格:<input name="kquery" value="{{ request.GET.kquery }}" type="text">
+        備考:<input name="bquery" value="{{ request.GET.bquery }}" type="text">
         <button type="submit">検索する</button>
+	</p>
     </form>
 	<form name="labels" action="" method="post">
     <table class="table-light table-striped" border="1">
 	    <thead>
         <tr>
-            <th>コード</th>
+            <th>obicコード</th>
             <th>背番号</th>
-            <th>仕入先コード</th>
+            <th>仕入先CD</th>
             <th>仕入先名</th>
+            <th>規格</th>
+            <th>備考(旧コード)</th>
             <th>削除</th>
             <th>編集</th>
             <th>コピー</th>
             <th>ラベル作成
-<input type="button" value="全部ON！" onclick="allcheck(true);">
-   <input type="button" value="全部OFF！" onclick="allcheck(false);">
+<input type="button" value="全ON" onclick="allcheck(true);">
+   <input type="button" value="全OFF" onclick="allcheck(false);">
 	    </th>
         </tr>
 	    </thead>
@@ -49,6 +56,8 @@ function allcheck( tf ) {
             <td>{{ bango.se }}</td>
             <td>{{ bango.shiire.scode }}</td>
             <td>{{ bango.shiire.sname }}</td>
+            <td>{{ bango.kikaku }}</td>
+            <td>{{ bango.biko }}</td>
 	    <td>
 		    <a href="{% url 'bango_delete' pk=bango.pk %}"> 削除 </a>
 	    </td>

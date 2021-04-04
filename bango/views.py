@@ -31,27 +31,66 @@ class BangoList(LoginRequiredMixin, ListView):
 
         return redirect('label_list')  # 一覧ページにリダイレクト
 
-    def get_queryset(self):
-        #コード検索
-        cq_word = self.request.GET.get('cquery')
-        #背番号検索
-        seq_word = self.request.GET.get('sequery')
-        #仕入先コード検索
-        scq_word = self.request.GET.get('scquery')
-        #仕入先名検索
-        snq_word = self.request.GET.get('snquery')
+    #検索語とフィールド名を指定して、その言葉がフィールドに
+    #含まれるクエリーセットを返す関数。
+    #検索語はスペースで区切って、リストでANDでつなげる
+    def make_q(self,query, q_word, f_word):
+        #(2)キーワードをリスト化させる(複数指定の場合に対応させるため)
+        search      = self.request.GET[q_word].replace("　"," ")
+        search_list = search.split(" ")
+        filter = f_word + '__' + 'contains' #name__containsを作る
+        #(例)info=members.filter(**{ filter: search_string })
+        #(3)クエリを作る
+        for word in search_list:
+        #TIPS:AND検索の場合は&を、OR検索の場合は|を使用する。
+            query &= Q(**{ filter: word })
+            #(4)作ったクエリを返す
+        return query
 
-        if cq_word or seq_word or scq_word or snq_word:
-            bango_list = Bango.objects.filter(
-                Q(hcode__icontains=cq_word), 
-                Q(se__icontains=seq_word), 
-                Q(shiire__scode__icontains=scq_word), 
-                Q(shiire__sname__icontains=snq_word)).order_by('se') 
+
+    def get_queryset(self):
+        query = Q()
+        flag = 0 #一つも検索語がなければ、flag==0
+
+        #コード検索
+        if 'cquery' in self.request.GET:
+            query = self.make_q(query, 'cquery', 'hcode')
+            flag += 1
+
+        #背番号検索
+        if 'sequery' in self.request.GET:
+            query = self.make_q(query, 'sequery', 'se')
+            flag += 1
+
+        #仕入先CD名検索
+        if 'scquery' in self.request.GET:
+            scq_word = self.request.GET.get('scquery')
+            query &= Q(shiire__scode__icontains=scq_word)
+            flag += 1
+
+        #仕入先名検索
+        if 'snquery' in self.request.GET:
+            snq_word = self.request.GET.get('snquery')
+            query &= Q(shiire__sname__icontains=snq_word)
+            flag += 1
+
+        #規格検索
+        if 'kquery' in self.request.GET:
+            query = self.make_q(query, 'kquery', 'kikaku')
+            flag += 1
+
+        #備考検索
+        if 'bquery' in self.request.GET:
+            query = self.make_q(query, 'bquery', 'biko')
+            flag += 1
+
+        if flag == 0:
+            bango_list = ""
         else:
-            #object_list = Bango.objects.all()
-            bango_list = ''
+            bango_list = Bango.objects.filter(query).order_by('se')
 
         return bango_list
+
 
 class LabelList(LoginRequiredMixin, ListView):
     template_name='bango/label_list.html'
@@ -139,7 +178,7 @@ def down_sebango(request):
     bangos = Bango.objects.order_by('se')
     data = []
     for bango in bangos:
-        data.append([bango.hcode, bango.se, bango.shiire.scode, bango.shiire.sname])
+        data.append([bango.se, bango.hcode, bango.kikaku])
 
     sio = io.StringIO()
     writer = csv.writer(sio)

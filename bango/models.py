@@ -9,9 +9,11 @@ class Shiire(models.Model):
         return self.scode
 
 class Bango(models.Model):
-    hcode = models.CharField(max_length=200)
+    hcode = models.CharField(max_length=200, null=True, blank=True)
     se = models.CharField(max_length=30, unique=True)
     shiire = models.ForeignKey(Shiire, on_delete=models.CASCADE, null=True, blank=True)
+    kikaku = models.CharField(max_length=200, null=True, blank=True)
+    biko = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return self.se

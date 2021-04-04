@@ -18,4 +18,4 @@ class BangoForm(forms.ModelForm):
 
     class Meta:
         model = Bango 
-        fields = ("hcode", "se",  "shiire")
+        fields = ("hcode", "se",  "shiire", "kikaku", "biko")
